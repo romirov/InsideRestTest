@@ -1,0 +1,48 @@
+Тестовый проект, реализующий REST API.
+Проект создавался в Eclipse.
+Сборка проекта производится через Maven.
+Для работы проекта необходимо подготовить базу в Postgresql:
+CREATE USER inside WITH SUPERUSER PASSWORD 'Euxc1Qz44tl85bxt';
+CREATE DATABASE insidedb;
+GRANT ALL PRIVILEGES ON DATABASE insidedb TO inside; 
+\c insidedb
+CREATE TABLE IF NOT EXISTS user_table (
+     user_id BIGSERIAL PRIMARY KEY,
+     name CHARACTER VARYING(30),
+     password CHARACTER VARYING(30),
+     token TEXT
+); 
+CREATE TABLE IF NOT EXISTS message_table (
+     message_id BIGSERIAL PRIMARY KEY,
+     message TEXT,
+     user_id BIGSERIAL
+);
+
+insert into user_table (name,password,token) values('insidetest','lookup','null');
+
+Если Postgresql и проект размещены на разных машинах, то в файле проекта application.properties в строке spring.datasource.url необходимо указать верный ip адрес машины с Postgresql.
+
+После импортирования и запуска проекта в Eclipse(или сборки его в консоле через утилиту mvn и запуск через команду java -jar InsideRestTest-0.0.1-SNAPSHOT.jar), проверить его работу можно 
+при помощи запросов в curl или Postman:
+- post request: http://localhost:8080/auth?name=insidetest&password=lookup
+Где name - имя пользователя, хранящегося в базе данных, password - пароль этого пользователя.
+Запрос проверяет эндпоинт, который получает данные в json вида :
+{
+    name: "имя отправителя"
+    password: "пароль" 
+}
+и проверяет пароль по базе данных, а также создает jwt токен, в который записывает данные: name: "имя отправителя" и отправляет его в ответ в виде:
+{
+    token: "тут сгенерированный токен" 
+}
+- post request: http://localhost:8080/message?name=insidetest&message=TEST_13 с заголовком Authorization: Bearer <token>
+Где name - имя пользователя, хранящегося в базе данных, message - сообщение от пользователя, token - токен, полученный из предыдущего запроса.
+Запрос проверяет эндпоинт, который получает сообщение в формате:
+{
+    name:       "имя отправителя",
+    message:    "текст сообщение"
+}
+c заголовком Bearer <токен>. В случае успешной проверки, сообщение сохраняется в базе.
+- post request: http://localhost:8080/message?name=insidetest&message=history 10
+Где name - имя пользователя, хранящегося в базе данных, message - сообщение от пользователя, содержащее слово history и количество последних сообщений, которые эндпоинт должен вернуть, token - токен, полученный из предыдущего запроса.
+Запрос проверяет эдпоинт, который в ответ высылает историю сообщений.

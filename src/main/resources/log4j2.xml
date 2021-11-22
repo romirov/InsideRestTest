@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="InsideRestTest" packages="com.insideresttest">
+	<Appenders>
+        <!--<RollingFile name="RollingFile" fileName="${baseDir}/telegrambot.log"
+                filePattern="${baseDir}/telegrambot-%d{yyyy-MM-dd}.log.gz">
+                <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+                <CronTriggeringPolicy schedule="0 0 0 * * ?"/>
+                <DefaultRolloverStrategy>
+                        <Delete basePath="${baseDir}" maxDepth="1">
+                                <IfFileName glob="*/telegrambot-*.log.gz" />
+                                <IfLastModified age="7d" />
+                        </Delete>
+                </DefaultRolloverStrategy>
+		</RollingFile>-->
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="Console"/>
+		</Root>
+	</Loggers>
+</Configuration>
