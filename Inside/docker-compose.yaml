@@ -1,0 +1,27 @@
+version: '3.3'
+networks:
+  inside-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+services:
+  inside_bot:
+    image: "insidebot"
+    build:
+      context: .
+      dockerfile: ./Bot/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      inside-network:
+        ipv4_address: 172.20.0.100
+  postgresql:
+    image: "insidedb"
+    build: 
+      context: .
+      dockerfile: ./PostgreSQL/Dockerfile
+    ports:
+      - "5432:5432"
+    networks:
+      inside-network:
+        ipv4_address: 172.20.0.200
